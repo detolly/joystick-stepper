@@ -1,0 +1,38 @@
+# Base system
+linux-lts
+alpine-base
+agetty
+util-linux
+apk-cron
+kbd-bkeymaps
+ca-certificates
+tzdata
+eudev
+
+# Daemons and services
+dhcpcd
+openssh
+
+# Filesystems and devices
+eudev
+dosfstools
+e2fsprogs
+gptfdisk
+usbutils
+
+# Pi
+pigpio
+
+# Bluetooth
+bluez
+bluez-deprecated
+
+# Tools
+tar
+wget
+strace
+file
+moreutils
+findutils
+findutils-locate
+less
