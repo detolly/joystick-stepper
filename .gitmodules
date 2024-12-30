@@ -1,0 +1,3 @@
+[submodule "controller/libenjoy"]
+	path = controller/libenjoy
+	url = https://github.com/Tasssadar/libenjoy
