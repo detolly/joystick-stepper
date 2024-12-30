@@ -3,7 +3,7 @@ set -e
 
 export PATH=/usr/bin:/bin:/sbin
 
-ln -s /sbin/openrc-init /init
+ln -s /sbin/init /init
 
 rc-update add devfs sysinit
 rc-update add dmesg sysinit
@@ -32,6 +32,6 @@ rc-update add sshd default
 
 ROOT_PASSWORD=$(echo root_password)
 passwd root <<EOF
-$ROOT_PASSWORD
-$ROOT_PASSWORD
+"$ROOT_PASSWORD"
+"$ROOT_PASSWORD"
 EOF

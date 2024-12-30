@@ -1,5 +1,6 @@
 # Base system
-linux-lts
+linux-firmware-brcm
+
 alpine-base
 agetty
 util-linux

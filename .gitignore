@@ -1,2 +1,5 @@
 debian-raspi/
 raspi-alpine/
+root_password
+bin/
+raspbian/

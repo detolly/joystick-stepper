@@ -1,0 +1,40 @@
+
+#include <thread>
+#include <print>
+
+#include <unistd.h>
+
+#include <joystick.hpp>
+#include <stepper.hpp>
+
+stepper_motor x{ 1, 2, 1000 };
+stepper_motor y{ 3, 4, 1000 };
+joystick joy;
+
+int main()
+{
+    std::println(stderr, "Starting motor controller");
+
+    std::thread t_joystick{ joystick_thread, &joy };
+    std::thread t_stepper_x{ stepper_thread, x, &joy };
+    std::thread t_stepper_y{ stepper_thread, y, &joy };
+
+    while(true) {
+        if (!joy.l1_button || !joy.triangle_button) {
+            std::println(stderr, "Starting motor controller");
+            usleep(1000);
+            continue;
+        }
+
+        x.exit = true;
+        y.exit = true;
+        joy.exit = true;
+        break;
+    }
+
+    t_joystick.join();
+    t_stepper_x.join();
+    t_stepper_y.join();
+
+    return 0;
+}

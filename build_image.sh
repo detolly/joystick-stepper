@@ -8,7 +8,7 @@ HERE=$(pwd)
 
 __ "TMP: $ROOTFS_DEST"
 
-trap 'rm -rf "$ROOTFS_DEST"' EXIT
+#trap 'rm -rf "$ROOTFS_DEST"' EXIT
 
 __ "Building rootfs"
 
@@ -18,6 +18,8 @@ mkdir -p "$ROOTFS_DEST/etc"
 mkdir -p "$ROOTFS_DEST/etc/mkinitfs"
 echo "disable_trigger=yes" > "$ROOTFS_DEST/etc/mkinitfs/mkinitfs.conf"
 
+cp root_password "$ROOTFS_DEST"
+
 export ALPINE_BRANCH=edge
 export SCRIPT_CHROOT=yes
 export FS_SKEL_DIR=$(pwd)/root
@@ -26,9 +28,12 @@ PACKAGES="$(grep -v -e '^#' -e '^$' packages)"
 export PACKAGES
 ./alpine-make-rootfs "$ROOTFS_DEST" setup.sh -a aarch64
 
+rm "$ROOTFS_DEST"/root_password
+
 __ "Building initramfs"
 
+mkdir -p bin
+
 cd "$ROOTFS_DEST"
-find . -path "./boot" -prune -o -print | cpio -o -H newc | gzip > "$HERE"/initramfs-lts
 
-
+find . -path "./boot" -prune -o -print | cpio -o -H newc | gzip > "$HERE/bin/initramfs-lts"
