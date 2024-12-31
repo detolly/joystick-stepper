@@ -61,6 +61,5 @@ void stepper_thread(stepper_motor* motor, joystick* joystick)
             stepper_step(motor, joystick);
         }
     }
-    std::println("here");
 }
 
