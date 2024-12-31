@@ -1,4 +1,5 @@
 
+#include <pigpio.h>
 #include <thread>
 #include <print>
 
@@ -14,6 +15,12 @@ joystick joy;
 int main()
 {
     std::println(stderr, "Starting motor controller");
+
+    int rc = gpioInitialise();
+    if (rc != 0) {
+        std::println("Failed to initialize gpio..");
+        return -1;
+    }
 
     std::thread t_joystick{ joystick_thread, &joy };
     std::thread t_stepper_x{ stepper_thread, &x, &joy };

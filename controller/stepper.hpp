@@ -1,5 +1,11 @@
 #pragma once
 
+enum class direction
+{
+    left,
+    right
+};
+
 enum class axis
 {
     X,
@@ -13,6 +19,8 @@ struct stepper_motor
     
     unsigned int current_step{};
     unsigned int steps_per_revolution{};
+
+    direction current_direction;
 
     axis ax{};
 

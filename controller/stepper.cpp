@@ -1,26 +1,25 @@
 
 #include <cmath>
 #include <print>
-#include <string_view>
 
+#include <pigpio.h>
 #include <unistd.h>
 
 #include <stepper.hpp>
 #include <joystick.hpp>
 
-enum class direction
-{
-    left,
-    right
-};
-
 using namespace std::string_view_literals;
 
 static void pulse(stepper_motor* motor, direction dir)
 {
-    std::println("[Motor {}] PULSE {}",
-                 (int)motor->ax,
-                 dir == direction::right ? "RIGHT"sv : "LEFT"sv);
+    /*std::println("[Motor {}] PULSE {}",*/
+    /*             (int)motor->ax,*/
+    /*             dir == direction::right ? "RIGHT"sv : "LEFT"sv);*/
+    if (motor->current_direction != dir) {
+        motor->current_direction = dir;
+        gpioTrigger(motor->dir_gpio, 10, 1);
+    }
+    gpioTrigger(motor->pulse_gpio, 10, 1);
     motor->current_step = (motor->current_step + (dir == direction::right ? 1 : -1)) % motor->steps_per_revolution;
 }
 
