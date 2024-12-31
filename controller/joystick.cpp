@@ -11,7 +11,7 @@ static void joystick_connected(joystick* joystick)
     libenjoy_event ev;
 
     std::println(stderr, "Success!\n");
-    std::println(stderr, "Axes: {} btns: {}\n", libenjoy_get_axes_num(joy),libenjoy_get_buttons_num(joy));
+    std::println(stderr, "Axes: {} btns: {}\n", libenjoy_get_axes_num(joystick->joy),libenjoy_get_buttons_num(joystick->joy));
 
     while(!joystick->exit)
     {
@@ -20,17 +20,20 @@ static void joystick_connected(joystick* joystick)
             switch(ev.type)
             {
             case LIBENJOY_EV_AXIS:
-                std::println(stderr, "{}: axis {} val {}\n", ev.joy_id, ev.part_id, ev.data);
+                if (ev.part_id == 0) {
+                    joystick->x_axis = (float)ev.data / (float)32767;
+                } else if (ev.part_id == 1) {
+                    joystick->y_axis = -(float)ev.data / (float)32767;
+                }
                 break;
             case LIBENJOY_EV_BUTTON:
-                std::println(stderr, "{}: button {} val {}\n", ev.joy_id, ev.part_id, ev.data);
                 break;
             case LIBENJOY_EV_CONNECTED:
-                std::println(stderr, "{}: status changed: {}\n", ev.joy_id, ev.data);
+                std::println(stderr, "{}: status changed: {}", ev.joy_id, ev.data);
                 break;
             }
         }
-        sleep(16);
+        usleep(1000);
         /*usleep(50000);*/
         /*counter += 50;*/
         /*if(counter >= 1000)*/
@@ -40,6 +43,7 @@ static void joystick_connected(joystick* joystick)
         /*}*/
     }
 
+    std::println(stderr, "Controller Disconnected!\n");
 }
 
 static void joystick_connect(joystick* joystick)
@@ -54,7 +58,7 @@ static void joystick_connect(joystick* joystick)
     if(info->count == 0)
     {
         libenjoy_free_info_list(info);
-        sleep(1000);
+        sleep(1);
         return;
     }
 
@@ -67,11 +71,14 @@ static void joystick_connect(joystick* joystick)
         std::println(stderr, "Joystick {} failed", joystick->id);
         joystick->id = -1;
         libenjoy_free_info_list(info);
-        sleep(1000);
+        sleep(1);
         return;
     }
 
+    joystick->connected = true;
+    std::println("Joystick connected: {}", joystick->connected);
     joystick_connected(joystick);
+    joystick->connected = false;
 
     libenjoy_close_joystick(joystick->joy);
     libenjoy_free_info_list(info);
@@ -88,6 +95,7 @@ void joystick_thread(joystick* joystick)
         joystick_connect(joystick);
     }
 
+    joystick->ctx = nullptr;
     libenjoy_close(ctx); 
 }
 

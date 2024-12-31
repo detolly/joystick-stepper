@@ -1,12 +1,11 @@
 
-OPTS="-O3 -std=c++23 -I. -Ilibenjoy/src"
-LINK_OPTS="-O3"
+CXX_OPTS="-std=c++23 -I. -Ilibenjoy/src -c"
+CC_OPTS="-I. -Ilibenjoy/src -c"
+LINK_OPTS=""
 
-gcc $OPTS libenjoy/src/libenjoy.cpp -o libenjoy.o
-gcc $OPTS libenjoy/src/libenjoy_linux.cpp -o libenjoy_linux.o
-
-gcc $OPTS joystick.cpp -o joystick.o
-gcc $OPTS stepper.cpp -o stepper.o
-gcc $OPTS main.cpp -o main.o
-
-gcc $LINK_OPTS main.o stepper.o joystick.o libenjoy.o libenjoy_linux.o -o controller
+gcc $CC_OPTS libenjoy/src/libenjoy.c -o libenjoy.o && \
+gcc $CC_OPTS libenjoy/src/libenjoy_linux.c -o libenjoy_linux.o && \
+g++ $CXX_OPTS joystick.cpp -o joystick.o && \
+g++ $CXX_OPTS stepper.cpp -o stepper.o && \
+g++ $CXX_OPTS main.cpp -o main.o && \
+g++ $LINK_OPTS main.o stepper.o joystick.o libenjoy.o libenjoy_linux.o -o controller

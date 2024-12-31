@@ -1,4 +1,5 @@
 
+#include <atomic>
 #include <libenjoy.h>
 
 struct joystick
@@ -7,14 +8,15 @@ struct joystick
     libenjoy_joystick* joy{nullptr};
     libenjoy_context* ctx{nullptr};
 
-    bool l1_button{false};
-    bool triangle_button{false};
+    bool l1_button{ false };
+    bool triangle_button{ false };
 
-    float x_axis{0};
-    float y_axis{0};
+    float x_axis{ 0 };
+    float y_axis{ 0 };
 
-    bool exit{false};
+    bool exit{ false };
+    bool connected{ false };
 };
 
-void joystick_thread();
+void joystick_thread(joystick* joystick);
 
