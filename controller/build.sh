@@ -1,7 +1,7 @@
 
 CXX_OPTS="-std=c++23 -I. -Ilibenjoy/src -c"
 CC_OPTS="-I. -Ilibenjoy/src -c"
-LINK_OPTS=""
+LINK_OPTS="-lpigpio"
 
 gcc $CC_OPTS libenjoy/src/libenjoy.c -o libenjoy.o && \
 gcc $CC_OPTS libenjoy/src/libenjoy_linux.c -o libenjoy_linux.o && \
