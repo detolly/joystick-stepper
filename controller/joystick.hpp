@@ -1,5 +1,4 @@
 
-#include <atomic>
 #include <libenjoy.h>
 
 struct joystick

@@ -1,5 +1,5 @@
-
 #include <print>
+
 #include <unistd.h>
 
 #include <joystick.hpp>
@@ -10,10 +10,12 @@ static void joystick_connected(joystick* joystick)
     unsigned int counter = 0;
     libenjoy_event ev;
 
-    std::println(stderr, "Success!\n");
-    std::println(stderr, "Axes: {} btns: {}\n", libenjoy_get_axes_num(joystick->joy),libenjoy_get_buttons_num(joystick->joy));
+    std::println(stderr, "Success!");
+    std::println(stderr, "Axes: {} btns: {}", libenjoy_get_axes_num(joystick->joy),libenjoy_get_buttons_num(joystick->joy));
 
-    while(!joystick->exit)
+    bool disconnected = false;
+
+    while(!joystick->exit && !disconnected)
     {
         while(libenjoy_poll(joystick->ctx, &ev))
         {
@@ -30,20 +32,14 @@ static void joystick_connected(joystick* joystick)
                 break;
             case LIBENJOY_EV_CONNECTED:
                 std::println(stderr, "{}: status changed: {}", ev.joy_id, ev.data);
+                disconnected = true;
                 break;
             }
         }
         usleep(1000);
-        /*usleep(50000);*/
-        /*counter += 50;*/
-        /*if(counter >= 1000)*/
-        /*{*/
-        /*    libenjoy_enumerate(joystick->ctx);*/
-        /*    counter = 0;*/
-        /*}*/
     }
 
-    std::println(stderr, "Controller Disconnected!\n");
+    std::println(stderr, "Controller Disconnected!");
 }
 
 static void joystick_connect(joystick* joystick)

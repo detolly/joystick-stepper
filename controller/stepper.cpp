@@ -12,14 +12,10 @@ using namespace std::string_view_literals;
 
 static void pulse(stepper_motor* motor, direction dir)
 {
-    /*std::println("[Motor {}] PULSE {}",*/
-    /*             (int)motor->ax,*/
-    /*             dir == direction::right ? "RIGHT"sv : "LEFT"sv);*/
-    if (motor->current_direction != dir) {
-        motor->current_direction = dir;
-        gpioTrigger(motor->dir_gpio, 10, 1);
-    }
-    gpioTrigger(motor->pulse_gpio, 10, 1);
+    gpioWrite(motor->dir_gpio, dir == direction::left ? 1 : 0);
+    gpioWrite(motor->pulse_gpio, 1);
+    usleep(10);
+    gpioWrite(motor->pulse_gpio, 0);
     motor->current_step = (motor->current_step + (dir == direction::right ? 1 : -1)) % motor->steps_per_revolution;
 }
 
@@ -34,7 +30,7 @@ static void stepper_step(stepper_motor* motor, joystick* joystick)
 
         pulse(motor, modifier < 0.0f ? direction::left : direction::right);
 
-        const auto sleep_time = (int)((500 - 10) * (1.0f - fabs(modifier))) + 10;
+        const auto sleep_time = (int)((100 - 3) * (1.0f - fabs(modifier))) + 3;
         int sleep_count{ 0 };
         while (sleep_count++ < sleep_time) {
             const auto new_modifier = (motor->ax == axis::X ? joystick->x_axis : joystick->y_axis);
